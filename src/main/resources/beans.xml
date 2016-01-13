@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <bean id="accountNumberGenerator" class="pl.training.bank.service.IncrementalAccountNumberGenerator"/>
 
@@ -11,5 +11,18 @@
         <constructor-arg name="accountNumberGenerator" ref="accountNumberGenerator"/>
         <constructor-arg name="accountsRepository" ref="accountsRepository"/>
     </bean>
+
+    <bean id="operationLogger" class="pl.training.bank.service.ConsoleOperationLogger"/>
+
+    <aop:config>
+        <aop:aspect ref="operationLogger">
+            <aop:pointcut id="operations" expression="execution(* pl.training.bank.Bank.*Funds*(..))"/>
+            <aop:before pointcut="execution(* pl.training.bank.Bank.depositFundsIntoAccount(..)) and args(funds,accountNumber)" method="beforeDepositFundsIntoAccount"/>
+            <aop:before pointcut="execution(* pl.training.bank.Bank.withdrawFundsFromAccount(..)) and args(funds,accountNumber)" method="beforeWithdrawFundsFromAccount"/>
+            <aop:before pointcut="execution(* pl.training.bank.Bank.transferFunds(..)) and args(funds,fromAccountNumber,toAccountNumber)" method="beforeTransferFunds"/>
+            <aop:after-returning pointcut-ref="operations" method="onSuccess"/>
+            <aop:after-throwing pointcut-ref="operations" method="onException" throwing="ex"/>
+        </aop:aspect>
+    </aop:config>
 
 </beans>

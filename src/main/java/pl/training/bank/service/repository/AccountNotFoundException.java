@@ -1,4 +1,6 @@
 package pl.training.bank.service.repository;
 
-public class AccountNotFoundException extends RuntimeException {
+import pl.training.bank.BankException;
+
+public class AccountNotFoundException extends BankException {
 }
