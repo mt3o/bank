@@ -1,14 +1,18 @@
 package pl.training.bank;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import pl.training.bank.entity.Account;
 import pl.training.bank.service.AccountNumberGenerator;
 import pl.training.bank.service.repository.AccountsRepository;
 
+@Component
 public class SpringBank implements Bank {
 
     private AccountsRepository accountsRepository;
     private AccountNumberGenerator accountNumberGenerator;
 
+    @Autowired
     public SpringBank(AccountsRepository accountsRepository, AccountNumberGenerator accountNumberGenerator) {
         this.accountsRepository = accountsRepository;
         this.accountNumberGenerator = accountNumberGenerator;
