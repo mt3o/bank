@@ -1,12 +1,13 @@
 package pl.training.bank;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import pl.training.bank.config.Services;
 import pl.training.bank.entity.Account;
 
 public class App {
 
     public static void main(String[] args) {
-        try (ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("bank-service.xml", "bank-repository.xml")) {
+        try (AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(Services.class)) {
             Bank bank = applicationContext.getBean(Bank.class);
 
             Account firstAccount = bank.createAccount();
@@ -15,10 +16,7 @@ public class App {
             Account secondAccount = bank.createAccount();
             bank.depositFundsIntoAccount(10000, secondAccount.getNumber());
             bank.withdrawFundsFromAccount(100, secondAccount.getNumber());
-            bank.transferFunds(3, secondAccount.getNumber(), "");
-
-            System.out.println(firstAccount);
-            System.out.println(secondAccount);
+            bank.transferFunds(3, secondAccount.getNumber(), firstAccount.getNumber());
         }
     }
 
