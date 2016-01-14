@@ -14,7 +14,7 @@ import pl.training.bank.service.repository.AccountsRepository;
 import javax.persistence.EntityManagerFactory;
 
 @EnableAspectJAutoProxy
-@Import(Persistence.class)
+@Import({Persistence.class, Web.class})
 @Configuration
 public class Services {
 

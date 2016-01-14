@@ -1,5 +1,7 @@
 package pl.training.bank.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ public class Account implements Serializable {
     @Column(unique = true)
     private String number;
     private long balance;
+    @JsonIgnore
     @JoinColumn(name = "account_id")
     @OneToMany
     private List<Customer> customers = new ArrayList<>();

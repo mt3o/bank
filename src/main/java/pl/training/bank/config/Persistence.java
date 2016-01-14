@@ -1,15 +1,16 @@
 package pl.training.bank.config;
 
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
+import org.springframework.orm.jpa.JpaDialect;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -19,24 +20,15 @@ import java.util.Properties;
 
 @EnableJpaRepositories(basePackages = "pl.training.bank.service.repository")
 @EnableTransactionManagement
-@PropertySource("classpath:jdbc.properties")
 @Configuration
 public class Persistence {
 
     @Autowired
     private Environment environment;
 
-    @Bean
+    @Bean(destroyMethod="") // ze względu na Tomcat'a
     public DataSource dataSource() {
-        BasicDataSource basicDataSource = new BasicDataSource();
-        basicDataSource.setUrl(environment.getProperty("url"));
-        basicDataSource.setUsername(environment.getProperty("login"));
-        basicDataSource.setPassword(environment.getProperty("password"));
-        basicDataSource.setDriverClassName(environment.getProperty("driverClass"));
-        basicDataSource.setInitialSize(5);
-        basicDataSource.setMaxWaitMillis(3000);
-        basicDataSource.setMaxIdle(3000);
-        return basicDataSource;
+        return new JndiDataSourceLookup().getDataSource("java:/comp/env/jdbc/training");
     }
 
     @Bean
@@ -48,6 +40,7 @@ public class Persistence {
 
         Properties properties = new Properties();
         properties.put("javax.persistence.schema-generation.database.action", "drop-and-create");
+        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
         entityManagerFactory.setJpaProperties(properties);
 
         return entityManagerFactory;
