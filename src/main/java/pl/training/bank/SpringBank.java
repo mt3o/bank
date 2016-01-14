@@ -1,9 +1,11 @@
 package pl.training.bank;
 
+import org.springframework.transaction.annotation.Transactional;
 import pl.training.bank.entity.Account;
 import pl.training.bank.service.AccountNumberGenerator;
 import pl.training.bank.service.repository.AccountsRepository;
 
+@Transactional
 public class SpringBank implements Bank {
 
     private AccountsRepository accountsRepository;

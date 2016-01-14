@@ -16,7 +16,7 @@ public class App {
             Account secondAccount = bank.createAccount();
             bank.depositFundsIntoAccount(10000, secondAccount.getNumber());
             bank.withdrawFundsFromAccount(100, secondAccount.getNumber());
-            bank.transferFunds(3, secondAccount.getNumber(), firstAccount.getNumber());
+            bank.transferFunds(3, secondAccount.getNumber(),"sss");
         }
     }
 
