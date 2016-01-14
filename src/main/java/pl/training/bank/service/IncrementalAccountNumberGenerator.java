@@ -1,19 +1,20 @@
 package pl.training.bank.service;
 
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.hibernate.SessionFactory;
 
-import javax.sql.DataSource;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class IncrementalAccountNumberGenerator implements AccountNumberGenerator {
 
-    private static final String SELECT_LAST_ACCOUNT_NUMBER = "select max(number) from account";
+    private static final String SELECT_LAST_ACCOUNT_NUMBER = "select max(a.number) from Account a";
 
     private AtomicLong counter = new AtomicLong();
 
-    public IncrementalAccountNumberGenerator(DataSource dataSource) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        String lastAccountNumber = jdbcTemplate.queryForObject(SELECT_LAST_ACCOUNT_NUMBER, String.class);
+    public IncrementalAccountNumberGenerator(SessionFactory sessionFactory) {
+        String lastAccountNumber = (String) sessionFactory.openSession()
+                .createQuery(SELECT_LAST_ACCOUNT_NUMBER)
+                .uniqueResult();
+
         if (lastAccountNumber != null) {
             counter = new AtomicLong(Long.valueOf(lastAccountNumber));
         }

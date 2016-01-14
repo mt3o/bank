@@ -1,10 +1,18 @@
 package pl.training.bank.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.io.Serializable;
 
+@Entity
 public class Account implements Serializable {
 
+    @GeneratedValue
+    @Id
     private Long id;
+    @Column(unique = true)
     private String number;
     private long balance;
 
