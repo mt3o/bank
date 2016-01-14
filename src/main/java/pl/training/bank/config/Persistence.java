@@ -48,13 +48,13 @@ public class Persistence {
 
         Properties properties = new Properties();
         properties.put("javax.persistence.schema-generation.database.action", "drop-and-create");
-
         entityManagerFactory.setJpaProperties(properties);
+
         return entityManagerFactory;
     }
 
     @Bean
-    public AccountsRepository accountsRepository(EntityManagerFactory entityManagerFactory) {
+    public AccountsRepository accountsRepository() {
         return new JpaAccountsRepository();
     }
 
