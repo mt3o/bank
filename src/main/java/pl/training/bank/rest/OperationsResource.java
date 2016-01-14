@@ -12,7 +12,7 @@ public class OperationsResource {
 
     private Bank bank;
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.PUT)
     public ResponseEntity process(@RequestBody OperationTO operation, @PathVariable("account-number") String accountNumber) {
         switch (operation.getType()) {
             case DEPOSIT:

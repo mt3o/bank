@@ -38,7 +38,7 @@ public class AccountsResource {
     public ResponseEntity createAccount() {
         Account account = bank.createAccount();
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("{/id}").buildAndExpand(account.getId()).toUri();
+                .path("/{id}").buildAndExpand(account.getId()).toUri();
         return ResponseEntity.created(uri).build();
     }
 
