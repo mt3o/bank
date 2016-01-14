@@ -6,23 +6,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
-public class JpaAccountsRepository implements AccountsRepository {
+public class AccountRepositoryImpl implements AccountRepositoryCustom {
 
     @PersistenceContext
     private EntityManager entityManager;
-
-    @Override
-    public Account save(Account account) {
-        entityManager.persist(account);
-        entityManager.flush();
-        entityManager.refresh(account);
-        return account;
-    }
-
-    @Override
-    public void update(Account account) {
-        entityManager.merge(account);
-    }
 
     @Override
     public Account getByNumber(String accountNumber) {

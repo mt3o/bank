@@ -26,14 +26,14 @@ public class SpringBank implements Bank {
     public void depositFundsIntoAccount(long funds, String accountNumber) {
         Account account = accountsRepository.getByNumber(accountNumber);
         account.deposit(funds);
-        accountsRepository.update(account);
+        accountsRepository.save(account);
     }
 
     @Override
     public void withdrawFundsFromAccount(long funds, String accountNumber) {
         Account account = accountsRepository.getByNumber(accountNumber);
         account.withdraw(funds);
-        accountsRepository.update(account);
+        accountsRepository.save(account);
     }
 
     @Override

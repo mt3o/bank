@@ -1,13 +1,8 @@
 package pl.training.bank.service.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import pl.training.bank.entity.Account;
 
-public interface AccountsRepository {
-
-    Account save(Account account);
-
-    void update(Account account);
-
-    Account getByNumber(String accountNumber);
+public interface AccountsRepository extends JpaRepository<Account, Long>, AccountRepositoryCustom {
 
 }

@@ -2,6 +2,8 @@ package pl.training.bank.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @NamedQuery(name = Account.SELECT_BY_NUMBER, query = "select a from Account a where a.number = :number")
 @Entity
@@ -15,12 +17,21 @@ public class Account implements Serializable {
     @Column(unique = true)
     private String number;
     private long balance;
+    @JoinColumn(name = "account_id")
+    @OneToMany
+    private List<Customer> customers = new ArrayList<>();
 
     public Account() {
     }
 
     public Account(String number) {
         this.number = number;
+    }
+
+    public void addCustomer(Customer customer) {
+        if (!customers.contains(customer)) {
+            customers.add(customer);
+        }
     }
 
     public void deposit(long funds) {
@@ -63,7 +74,8 @@ public class Account implements Serializable {
         Account account = (Account) o;
 
         if (balance != account.balance) return false;
-        return number != null ? number.equals(account.number) : account.number == null;
+        if (number != null ? !number.equals(account.number) : account.number != null) return false;
+        return customers != null ? customers.equals(account.customers) : account.customers == null;
 
     }
 
@@ -71,6 +83,7 @@ public class Account implements Serializable {
     public int hashCode() {
         int result = number != null ? number.hashCode() : 0;
         result = 31 * result + (int) (balance ^ (balance >>> 32));
+        result = 31 * result + (customers != null ? customers.hashCode() : 0);
         return result;
     }
 
@@ -80,6 +93,7 @@ public class Account implements Serializable {
                 "id=" + id +
                 ", number='" + number + '\'' +
                 ", balance=" + balance +
+                ", customers=" + customers +
                 '}';
     }
 
