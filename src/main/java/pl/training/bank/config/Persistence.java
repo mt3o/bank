@@ -15,8 +15,8 @@ import pl.training.bank.service.repository.AccountsRepository;
 import pl.training.bank.service.repository.JpaAccountsRepository;
 
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.spi.PersistenceProvider;
 import javax.sql.DataSource;
+import java.util.Properties;
 
 @EnableTransactionManagement
 @PropertySource("classpath:jdbc.properties")
@@ -45,6 +45,11 @@ public class Persistence {
         entityManagerFactory.setPackagesToScan("pl.training.bank.entity");
         entityManagerFactory.setDataSource(dataSource);
         entityManagerFactory.setPersistenceProviderClass(HibernatePersistenceProvider.class);
+
+        Properties properties = new Properties();
+        properties.put("javax.persistence.schema-generation.database.action", "drop-and-create");
+
+        entityManagerFactory.setJpaProperties(properties);
         return entityManagerFactory;
     }
 
