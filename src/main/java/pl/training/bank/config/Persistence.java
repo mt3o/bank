@@ -1,23 +1,22 @@
 package pl.training.bank.config;
 
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.hibernate.SessionFactory;
+import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import pl.training.bank.service.repository.AccountsRepository;
-import pl.training.bank.service.repository.HibernateAccountsRepository;
+import pl.training.bank.service.repository.JpaAccountsRepository;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.spi.PersistenceProvider;
 import javax.sql.DataSource;
-import java.util.Properties;
 
 @EnableTransactionManagement
 @PropertySource("classpath:jdbc.properties")
@@ -41,29 +40,22 @@ public class Persistence {
     }
 
     @Bean
-    public AccountsRepository accountsRepository(SessionFactory sessionFactory) {
-        return new HibernateAccountsRepository(sessionFactory);
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
+        LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
+        entityManagerFactory.setPackagesToScan("pl.training.bank.entity");
+        entityManagerFactory.setDataSource(dataSource);
+        entityManagerFactory.setPersistenceProviderClass(HibernatePersistenceProvider.class);
+        return entityManagerFactory;
     }
 
     @Bean
-    public PropertiesFactoryBean hibernateProperties() {
-        PropertiesFactoryBean factoryBean = new PropertiesFactoryBean();
-        factoryBean.setLocation(new ClassPathResource("hibernate.properties"));
-        return factoryBean;
+    public AccountsRepository accountsRepository(EntityManagerFactory entityManagerFactory) {
+        return new JpaAccountsRepository();
     }
 
     @Bean
-    public LocalSessionFactoryBean sessionFactory(DataSource dataSource, Properties hibernateProperties) {
-        LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
-        factoryBean.setDataSource(dataSource);
-        factoryBean.setPackagesToScan("pl.training.bank.entity");
-        factoryBean.setHibernateProperties(hibernateProperties);
-        return factoryBean;
-    }
-
-    @Bean
-    public PlatformTransactionManager transactionManager(SessionFactory sessionFactory) {
-        return new HibernateTransactionManager(sessionFactory);
+    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+        return new JpaTransactionManager(entityManagerFactory);
     }
 
 }

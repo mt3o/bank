@@ -1,6 +1,5 @@
 package pl.training.bank.config;
 
-import org.hibernate.SessionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -12,14 +11,16 @@ import pl.training.bank.service.ConsoleOperationLogger;
 import pl.training.bank.service.IncrementalAccountNumberGenerator;
 import pl.training.bank.service.repository.AccountsRepository;
 
+import javax.persistence.EntityManagerFactory;
+
 @EnableAspectJAutoProxy
 @Import(Persistence.class)
 @Configuration
 public class Services {
 
     @Bean
-    public AccountNumberGenerator accountNumberGenerator(SessionFactory sessionFactory) {
-        return new IncrementalAccountNumberGenerator(sessionFactory);
+    public AccountNumberGenerator accountNumberGenerator(EntityManagerFactory entityManagerFactory) {
+        return new IncrementalAccountNumberGenerator(entityManagerFactory);
     }
 
     @Bean

@@ -1,13 +1,13 @@
 package pl.training.bank.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
+@NamedQuery(name = Account.SELECT_BY_NUMBER, query = "select a from Account a where a.number = :number")
 @Entity
 public class Account implements Serializable {
+
+    public static final String SELECT_BY_NUMBER = "selectAccountByNumber";
 
     @GeneratedValue
     @Id

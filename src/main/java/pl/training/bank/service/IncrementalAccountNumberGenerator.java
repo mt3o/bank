@@ -1,7 +1,6 @@
 package pl.training.bank.service;
 
-import org.hibernate.SessionFactory;
-
+import javax.persistence.EntityManagerFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class IncrementalAccountNumberGenerator implements AccountNumberGenerator {
@@ -10,10 +9,10 @@ public class IncrementalAccountNumberGenerator implements AccountNumberGenerator
 
     private AtomicLong counter = new AtomicLong();
 
-    public IncrementalAccountNumberGenerator(SessionFactory sessionFactory) {
-        String lastAccountNumber = (String) sessionFactory.openSession()
-                .createQuery(SELECT_LAST_ACCOUNT_NUMBER)
-                .uniqueResult();
+    public IncrementalAccountNumberGenerator(EntityManagerFactory entityManagerFactory) {
+        String lastAccountNumber = entityManagerFactory.createEntityManager()
+                .createQuery(SELECT_LAST_ACCOUNT_NUMBER, String.class)
+                .getSingleResult();
 
         if (lastAccountNumber != null) {
             counter = new AtomicLong(Long.valueOf(lastAccountNumber));
